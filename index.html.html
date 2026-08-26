@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="ca">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Horari — Pablo Ros — Institut del Ter</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        margin: 20px;
+        background: #fff;
+        color: #222;
+      }
+      h1,
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+      h1 {
+        margin-bottom: 4px;
+      }
+      .subtitle {
+        text-align: center;
+        color: #777;
+        font-size: 13px;
+        margin-bottom: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        text-align: center;
+        padding: 6px;
+        vertical-align: top;
+      }
+      th {
+        background-color: #f2f2f2;
+        font-size: 13px;
+      }
+      td.time {
+        background: #fafafa;
+        font-size: 11px;
+        color: #888;
+        white-space: nowrap;
+        width: 70px;
+      }
+      td.slot {
+        height: 46px;
+        position: relative;
+        padding: 0;
+      }
+
+      .event {
+        font-size: 11px;
+        padding: 4px 5px;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        line-height: 1.3;
+        width: 100%;
+        height: 100%;
+        min-height: 46px;
+        box-sizing: border-box;
+      }
+      .event .icon {
+        font-size: 14px;
+        display: block;
+      }
+      .event .sub {
+        display: block;
+        font-size: 9px;
+        opacity: 0.8;
+        margin-top: 1px;
+      }
+
+      /* Assignatures — colors intensos, un per matèria (independent de grup o aula) */
+      .s-tec3 {
+        background-color: #2d6cdf;
+        color: #fff;
+      } /* Tecnologia 3r */
+      .s-robotica {
+        background-color: #8e44ad;
+        color: #fff;
+      } /* Robòtica */
+      .s-fusteria {
+        background-color: #a1662f;
+        color: #fff;
+      } /* Tastet fusteria */
+      .s-ambit {
+        background-color: #16957a;
+        color: #fff;
+      } /* Àmbit científic */
+
+      /* Tasques de centre — pastel·les, diferenciades per tipus */
+      .c-guardia-lect {
+        background-color: #f6b8b0;
+        color: #5a231c;
+      } /* guàrdia hora lectiva */
+      .c-guardia-pati {
+        background-color: #fbd7d1;
+        color: #5a231c;
+      } /* guàrdia de pati */
+      .c-coord-dig {
+        background-color: #bcd8f5;
+        color: #1c3a5c;
+      } /* coordinació digital */
+      .c-coord-bicis {
+        background-color: #c7e8bf;
+        color: #244a1d;
+      } /* coordinació bicis */
+      .c-tutoria {
+        background-color: #f6e4a3;
+        color: #5c4a12;
+      } /* tutoria individual */
+      .c-equips {
+        background-color: #ddc9ea;
+        color: #402a54;
+      } /* equips docents / àmbits */
+      .c-lectura {
+        background-color: #dbe2e8;
+        color: #33424e;
+      } /* lectura 3r C */
+      .c-teulateams {
+        background-color: #f4dcb8;
+        color: #5c3f13;
+      } /* teulateams */
+
+      .legend {
+        margin: 20px auto;
+        padding: 10px;
+        border: 1px solid #ccc;
+        max-width: 1100px;
+        text-align: center;
+      }
+      .legend h3 {
+        margin: 4px 0;
+        font-size: 12px;
+        color: #555;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .legend-item {
+        display: inline-block;
+        margin-right: 15px;
+        font-size: 12px;
+        margin-bottom: 4px;
+      }
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 5px;
+        border-radius: 3px;
+      }
+
+      .icons-key {
+        max-width: 1100px;
+        margin: 14px auto 0;
+        font-size: 12px;
+        color: #666;
+        text-align: center;
+        line-height: 1.8;
+      }
+      .foot-note {
+        max-width: 1100px;
+        margin: 8px auto 0;
+        font-size: 12px;
+        color: #999;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Horari — Pablo Ros</h1>
+    <p class="subtitle">
+      KronoWin Plus · Institut del Ter · Departament de Tecnologia · Nº 34 ·
+      ptec2
+    </p>
+
+    <div class="legend">
+      <h3>Assignatures</h3>
+      <span class="legend-item"
+        ><span class="legend-color s-tec3"></span>Tecnologia 3r (tec3)</span
+      >
+      <span class="legend-item"
+        ><span class="legend-color s-robotica"></span>Robòtica (opt rob3)</span
+      >
+      <span class="legend-item"
+        ><span class="legend-color s-fusteria"></span>Tastet fusteria</span
+      >
+      <span class="legend-item"
+        ><span class="legend-color s-ambit"></span>Àmbit científic</span
+      >
+      <h3>Tasques de centre</h3>
+      <span class="legend-item"
+        ><span class="legend-color c-guardia-lect"></span>Guàrdia (hora
+        lectiva)</span
+      >
+      <span class="legend-item"
+        ><span class="legend-color c-guardia-pati"></span>Guàrdia de pati</span
+      >
+      <span class="legend-item"
+        ><span class="legend-color c-coord-dig"></span>Coord. digital</span
+      >
+      <span class="legend-item"
+        ><span class="legend-color c-coord-bicis"></span>Coord. bicis</span
+      >
+      <span class="legend-item"
+        ><span class="legend-color c-tutoria"></span>Tutoria individual</span
+      >
+      <span class="legend-item"
+        ><span class="legend-color c-equips"></span>Equips docents /
+        àmbits</span
+      >
+      <span class="legend-item"
+        ><span class="legend-color c-lectura"></span>Lectura 3r C</span
+      >
+      <span class="legend-item"
+        ><span class="legend-color c-teulateams"></span>TeulaTeams</span
+      >
+    </div>
+
+    <table id="horari">
+      <tr>
+        <th>Hora</th>
+        <th>Dilluns</th>
+        <th>Dimarts</th>
+        <th>Dimecres</th>
+        <th>Dijous</th>
+        <th>Divendres</th>
+      </tr>
+    </table>
+
+    <p class="icons-key">
+      🔨 Tecnologia (tec3) &nbsp;·&nbsp; 🤖 Robòtica (opt rob3) &nbsp;·&nbsp; 🪚
+      Tastet fusteria &nbsp;·&nbsp; 🧪 Àmbit científic &nbsp;·&nbsp; 💻 Coord.
+      digital &nbsp;·&nbsp; 🚲 Coord. bicis &nbsp;·&nbsp; 👁️ Guàrdia
+      &nbsp;·&nbsp; 🗣️ Tutoria individual &nbsp;·&nbsp; 🧑‍🏫 Equips docents /
+      àmbits &nbsp;·&nbsp; 📖 Lectura 3r C &nbsp;·&nbsp; 🏫 TeulaTeams
+    </p>
+    <p class="foot-note">
+      Totes les sessions a l'aula A4 es fan al Taller de Tecnologia.
+    </p>
+
+    <script>
+      const SLOTS = [
+        "8:00",
+        "8:30",
+        "9:25",
+        "10:20",
+        "10:40",
+        "11:35",
+        "12:30",
+        "12:50",
+        "13:45",
+        "14:40",
+        "15:30",
+        "16:25",
+      ];
+
+      const DATA = {
+        0: [
+          {
+            start: "11:35",
+            span: 1,
+            cls: "s-ambit",
+            icon: "🧪",
+            title: "Àmbit cien2",
+            sub: "4t A · Taller tecno",
+          },
+          {
+            start: "12:30",
+            span: 1,
+            cls: "c-guardia-pati",
+            icon: "👁️",
+            title: "Guàrdia pati",
+            sub: "20 min",
+          },
+          {
+            start: "12:50",
+            span: 2,
+            cls: "s-tec3",
+            icon: "🔨",
+            title: "Tec 3 (desdobl.)",
+            sub: "3r C · Taller tecno",
+          },
+        ],
+        1: [
+          {
+            start: "8:00",
+            span: 1,
+            cls: "c-lectura",
+            icon: "📖",
+            title: "Lectura 3r C",
+            sub: "30 min",
+          },
+          {
+            start: "9:25",
+            span: 1,
+            cls: "s-tec3",
+            icon: "🔨",
+            title: "Tec 3",
+            sub: "3r A · A10",
+          },
+          {
+            start: "10:40",
+            span: 1,
+            cls: "c-coord-dig",
+            icon: "💻",
+            title: "Coord. digital",
+            sub: "",
+          },
+          {
+            start: "11:35",
+            span: 1,
+            cls: "s-fusteria",
+            icon: "🪚",
+            title: "Tastet fusteria",
+            sub: "3r C · Taller tecno",
+          },
+          {
+            start: "12:30",
+            span: 1,
+            cls: "c-guardia-pati",
+            icon: "👁️",
+            title: "Guàrdia pati",
+            sub: "20 min",
+          },
+          {
+            start: "12:50",
+            span: 1,
+            cls: "c-coord-bicis",
+            icon: "🚲",
+            title: "Coord. bicis",
+            sub: "#AulesQueCremen",
+          },
+          {
+            start: "13:45",
+            span: 1,
+            cls: "s-tec3",
+            icon: "🔨",
+            title: "Tec 3",
+            sub: "3r B · A9",
+          },
+          {
+            start: "15:30",
+            span: 2,
+            cls: "c-equips",
+            icon: "🧑‍🏫",
+            title: "Equips docents / àmbits",
+            sub: "cada setmana",
+          },
+        ],
+        2: [
+          {
+            start: "8:00",
+            span: 1,
+            cls: "c-teulateams",
+            icon: "🏫",
+            title: "TeulaTeams",
+            sub: "30 min",
+          },
+          {
+            start: "8:30",
+            span: 2,
+            cls: "s-tec3",
+            icon: "🔨",
+            title: "Tec 3 (desdobl.)",
+            sub: "3r A · Taller tecno",
+          },
+          {
+            start: "10:40",
+            span: 1,
+            cls: "c-coord-dig",
+            icon: "💻",
+            title: "Coord. digital",
+            sub: "",
+          },
+          {
+            start: "11:35",
+            span: 1,
+            cls: "c-guardia-lect",
+            icon: "👁️",
+            title: "Guàrdia lectiva",
+            sub: "",
+          },
+          {
+            start: "12:30",
+            span: 1,
+            cls: "c-guardia-pati",
+            icon: "👁️",
+            title: "Guàrdia pati",
+            sub: "20 min",
+          },
+          {
+            start: "12:50",
+            span: 1,
+            cls: "s-tec3",
+            icon: "🔨",
+            title: "Tec 3",
+            sub: "3r C · A8",
+          },
+        ],
+        3: [
+          {
+            start: "8:30",
+            span: 1,
+            cls: "c-guardia-lect",
+            icon: "👁️",
+            title: "Guàrdia lectiva",
+            sub: "",
+          },
+          {
+            start: "9:25",
+            span: 1,
+            cls: "c-tutoria",
+            icon: "🗣️",
+            title: "Tutoria individual",
+            sub: "",
+          },
+          {
+            start: "10:40",
+            span: 2,
+            cls: "s-tec3",
+            icon: "🔨",
+            title: "Tec 3 (desdobl.)",
+            sub: "3r B · Taller tecno",
+          },
+          {
+            start: "12:50",
+            span: 1,
+            cls: "s-robotica",
+            icon: "🤖",
+            title: "Opt. rob 3",
+            sub: "3r C · Taller tecno",
+          },
+          {
+            start: "13:45",
+            span: 1,
+            cls: "s-fusteria",
+            icon: "🪚",
+            title: "Tastet fusteria",
+            sub: "3r C · Taller tecno",
+          },
+        ],
+        4: [
+          {
+            start: "11:35",
+            span: 1,
+            cls: "s-robotica",
+            icon: "🤖",
+            title: "Opt. rob 3",
+            sub: "3r C · Taller tecno",
+          },
+          {
+            start: "12:50",
+            span: 2,
+            cls: "s-ambit",
+            icon: "🧪",
+            title: "Àmbit cien2",
+            sub: "4t A · Taller tecno",
+          },
+        ],
+      };
+
+      const table = document.getElementById("horari");
+
+      SLOTS.forEach((slot, rowIdx) => {
+        const tr = document.createElement("tr");
+
+        const tdTime = document.createElement("td");
+        tdTime.className = "time";
+        tdTime.textContent = slot;
+        tr.appendChild(tdTime);
+
+        for (let d = 0; d < 5; d++) {
+          const entry = DATA[d].find((e) => e.start === slot);
+          const covered = DATA[d].some((e) => {
+            const startIdx = SLOTS.indexOf(e.start);
+            return (
+              e.span > 1 && rowIdx > startIdx && rowIdx < startIdx + e.span
+            );
+          });
+          if (covered) continue;
+
+          const td = document.createElement("td");
+          td.className = "slot";
+          if (entry) {
+            if (entry.span > 1) td.rowSpan = entry.span;
+            td.innerHTML =
+              `<span class="event ${entry.cls}"><span class="icon">${entry.icon}</span>${entry.title}` +
+              (entry.sub ? `<span class="sub">${entry.sub}</span>` : "") +
+              `</span>`;
+          }
+          tr.appendChild(td);
+        }
+        table.appendChild(tr);
+      });
+    </script>
+  </body>
+</html>
